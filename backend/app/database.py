@@ -8,10 +8,13 @@ from pathlib import Path
 
 DB_PATH = os.getenv("LMS_DB_PATH", str(Path(__file__).resolve().parents[1] / "data" / "lms.db"))
 
-def _demo_password_hash(password: str) -> str:
+def create_password_hash(password: str) -> str:
     salt = secrets.token_bytes(16)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 310_000).hex()
     return f"pbkdf2_sha256$310000${salt.hex()}${digest}"
+
+# Keep the demo seed data compatible with existing imports.
+_demo_password_hash = create_password_hash
 
 @contextmanager
 def connect():
@@ -49,12 +52,14 @@ def initialize():
         opportunity_columns={row["name"] for row in db.execute("PRAGMA table_info(opportunities)")}
         if "organization_id" not in opportunity_columns:
             db.execute("ALTER TABLE opportunities ADD COLUMN organization_id TEXT NOT NULL DEFAULT 'northstar'")
-        db.execute("INSERT OR IGNORE INTO users VALUES(?,?,?,?,?,?)", ('demo-student','Aarav Sharma','student@demo.local','student','northstar',_demo_password_hash('StudentDemo!2026')))
-        db.execute("INSERT OR IGNORE INTO users VALUES(?,?,?,?,?,?)", ('demo-admin','Mira Kapoor','admin@demo.local','organization_admin','northstar',_demo_password_hash('AdminDemo!2026')))
-        db.execute("INSERT OR IGNORE INTO users VALUES(?,?,?,?,?,?)", ('demo-mentor','Kabir Mehta','mentor@demo.local','mentor','northstar',_demo_password_hash('MentorDemo!2026')))
+        db.execute("INSERT OR IGNORE INTO users VALUES(?,?,?,?,?,?)", ('demo-student','XYZ','student@demo.local','student','northstar',_demo_password_hash('StudentDemo!2026')))
+        db.execute("INSERT OR IGNORE INTO users VALUES(?,?,?,?,?,?)", ('demo-admin','XYZ','admin@demo.local','organization_admin','northstar',_demo_password_hash('AdminDemo!2026')))
+        db.execute("INSERT OR IGNORE INTO users VALUES(?,?,?,?,?,?)", ('demo-mentor','XYZ','mentor@demo.local','mentor','northstar',_demo_password_hash('MentorDemo!2026')))
+        db.execute("UPDATE users SET name='XYZ' WHERE id IN ('demo-student','demo-admin','demo-mentor')")
         db.executemany("INSERT OR IGNORE INTO opportunities VALUES(?,?,?,?,?,?,?,?)", [
-            ('intern-product','Product Operations Intern','Northstar Learning','Hybrid · Bengaluru','Operations','Help teams turn learner feedback into clear, measurable product improvements.','published','northstar'),
-            ('intern-data','Data Analytics Intern','Northstar Learning','Remote · India','Technology','Build dashboards and answer practical questions using real programme data.','published','northstar'),
-            ('intern-design','Learning Experience Intern','Northstar Learning','On-site · Pune','Design','Create accessible learning journeys with instructors and subject experts.','published','northstar')])
+            ('intern-product','Product Operations Intern','Tech & Trend Media Pvt. Ltd.','Hybrid · Bengaluru','Operations','Help teams turn learner feedback into clear, measurable product improvements.','published','northstar'),
+            ('intern-data','Data Analytics Intern','Tech & Trend Media Pvt. Ltd.','Remote · India','Technology','Build dashboards and answer practical questions using real programme data.','published','northstar'),
+            ('intern-design','Learning Experience Intern','Tech & Trend Media Pvt. Ltd.','On-site · Pune','Design','Create accessible learning journeys with instructors and subject experts.','published','northstar')])
+        db.execute("UPDATE opportunities SET organization=? WHERE organization='Northstar Learning'", ('Tech & Trend Media Pvt. Ltd.',))
         db.executemany("INSERT OR IGNORE INTO courses VALUES(?,?,?,?,1)", [('course-product','Product thinking at work','Business',8),('course-data','Data storytelling','Technology',6),('course-design','Designing accessible learning','Design',7)])
         db.executemany("INSERT OR IGNORE INTO workshops VALUES(?,?,?,?,?,1)", [('workshop-career','Building a portfolio that gets noticed','2026-11-12','Online',60),('workshop-data','From spreadsheet to story','2026-11-19','Bengaluru',35),('workshop-interview','Interview practice studio','2026-11-26','Online',40)])

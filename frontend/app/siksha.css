@@ -25,6 +25,11 @@ body { background: #f1ede3; color: #23231c; font-family: 'DM Sans', Arial, sans-
 .siksha-header { padding-top:18px; }
 .siksha-nav-shell { width:min(100%,1080px); min-height:54px; margin:0 auto; padding:6px 8px 6px 20px; box-sizing:border-box; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; border-radius:999px; background:#fbfaf5; box-shadow:0 1px 3px #23231c1a; }
 .siksha-wordmark { font:500 21px 'DM Serif Display',Georgia,serif; white-space:nowrap; }
+.siksha-company-brand { display:flex; align-items:center; gap:10px; min-width:220px; color:#23231c; text-decoration:none; }
+.siksha-company-brand img { width:42px; height:48px; padding:3px; box-sizing:border-box; object-fit:contain; border-radius:6px; background:#fff; }
+.siksha-company-brand span,.siksha-footer-brand span { display:grid; gap:3px; }
+.siksha-company-brand strong,.siksha-footer-brand strong { font-size:13px; font-weight:700; letter-spacing:-.02em; }
+.siksha-company-brand small,.siksha-footer-brand small { color:#777467; font-size:10px; }
 .siksha-nav { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .siksha-nav a,.siksha-signin-link { padding:12px 6px; color:#5d5c50; font-size:14px; transition:color .18s ease; }
 .siksha-nav a:hover,.siksha-signin-link:hover { color:#23231c; }
@@ -96,12 +101,15 @@ body { background: #f1ede3; color: #23231c; font-family: 'DM Sans', Arial, sans-
 .siksha-secondary-link { font-size:14px; font-weight:600; color:#4e6b3a; }
 .siksha-footer { margin-top:90px; margin-bottom:0; padding-top:24px; padding-bottom:40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-top:1px solid #d8d2c0; font-size:14px; color:#5d5c50; }
 .siksha-footer .siksha-wordmark { font-size:18px; color:#23231c; }
+.siksha-footer-brand { display:flex; align-items:center; gap:12px; }
+.siksha-footer-brand img { width:48px; height:58px; padding:3px; box-sizing:border-box; object-fit:contain; border-radius:6px; background:#fff; }
 .siksha-footer>a:last-child { display:flex; align-items:center; gap:7px; color:#4e6b3a; }
 
 /* Retain the working role workspaces with the reference palette. */
 .app-shell { background:#f1ede3; color:#23231c; font-family:'DM Sans',Arial,sans-serif; }
 .sidebar { background:#fbfaf5; border-right-color:#d8d2c0; }
 .workspace-wordmark { padding-left:12px; font:500 26px 'DM Serif Display',Georgia,serif; letter-spacing:0; }
+.workspace-wordmark img { width:30px; height:36px; padding:2px; box-sizing:border-box; object-fit:contain; border-radius:5px; background:#fff; }
 .nav-item { border-radius:999px; color:#5d5c50; }
 .nav-item.active { background:#e7ebde; color:#4e6b3a; }
 .nav-item:hover:not(.active) { background:#f1ede3; }
@@ -133,6 +141,8 @@ body { background: #f1ede3; color: #23231c; font-family: 'DM Sans', Arial, sans-
 :root[data-theme="dark"] .siksha-site { --siksha-ink:#f2efe6; --siksha-muted:#c2beaf; --siksha-card:#282820; --siksha-line:#414137; background:#1d1d18; color:#f2efe6; }
 :root[data-theme="dark"] .siksha-nav-shell,:root[data-theme="dark"] .siksha-login-form,:root[data-theme="dark"] .siksha-enquiry-card,:root[data-theme="dark"] .siksha-card { background:#282820; border-color:#414137; color:#f2efe6; }
 :root[data-theme="dark"] .siksha-wordmark,:root[data-theme="dark"] .siksha-footer .siksha-wordmark { color:#f2efe6; }
+:root[data-theme="dark"] .siksha-company-brand { color:#f2efe6; }
+:root[data-theme="dark"] .siksha-company-brand small,:root[data-theme="dark"] .siksha-footer-brand small { color:#c2beaf; }
 :root[data-theme="dark"] .siksha-nav a,:root[data-theme="dark"] .siksha-signin-link,:root[data-theme="dark"] .siksha-hero p,:root[data-theme="dark"] .siksha-section-heading>p,:root[data-theme="dark"] .siksha-card p,:root[data-theme="dark"] .siksha-contact-section>div:first-child>p,:root[data-theme="dark"] .siksha-enquiry-card>p,:root[data-theme="dark"] .siksha-footer,:root[data-theme="dark"] .siksha-demo-accounts { color:#c2beaf; }
 :root[data-theme="dark"] .siksha-nav a:hover,:root[data-theme="dark"] .siksha-signin-link:hover { color:#f2efe6; }
 :root[data-theme="dark"] .siksha-theme-toggle { color:#d6d1c2; }

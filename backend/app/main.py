@@ -1,10 +1,11 @@
 from contextlib import asynccontextmanager
 import hashlib
+import sqlite3
 from uuid import uuid4
 from fastapi import FastAPI, Depends, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from .database import connect, initialize
+from .database import connect, create_password_hash, initialize
 from .auth import current_user, create_session, require_role
 
 @asynccontextmanager
@@ -12,7 +13,7 @@ async def lifespan(app):
     initialize()
     yield
 
-app = FastAPI(title="Northstar LMS API", version="0.1.0", description="Local demonstration API. Demo authentication is not suitable for production.", lifespan=lifespan)
+app = FastAPI(title="Tech & Trend Media Pvt. Ltd. — Siksha LMS API", version="0.1.0", description="Learning and internship platform by Tech & Trend Media Pvt. Ltd., Sanjay Palace, Agra. Demo authentication is not suitable for production.", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"], allow_credentials=False, allow_methods=["GET","POST","PATCH"], allow_headers=["Authorization","Content-Type"])
 
 class ApplicationIn(BaseModel):
@@ -28,6 +29,11 @@ class LoginIn(BaseModel):
     email: str = Field(min_length=3, max_length=254)
     password: str = Field(min_length=1, max_length=200)
 
+class SignupIn(BaseModel):
+    name: str = Field(min_length=2, max_length=100)
+    email: str = Field(min_length=3, max_length=254)
+    password: str = Field(min_length=8, max_length=200)
+
 class MentorAssignmentIn(BaseModel):
     mentor_id: str
 
@@ -41,6 +47,21 @@ def ready():
 
 @app.get("/api/v1/me")
 def me(user=Depends(current_user)): return {k:v for k,v in user.items() if k != "organization_id"} | {"organization_id":user["organization_id"]}
+
+@app.post("/api/v1/auth/signup", status_code=201)
+def signup(payload: SignupIn):
+    email = payload.email.strip().lower()
+    user_id = str(uuid4())
+    try:
+        with connect() as db:
+            db.execute(
+                "INSERT INTO users(id,name,email,role,organization_id,password_hash) VALUES(?,?,?,?,?,?)",
+                (user_id, payload.name.strip(), email, "student", "northstar", create_password_hash(payload.password)),
+            )
+    except sqlite3.IntegrityError:
+        raise HTTPException(409, "An account with this email already exists.")
+    token, user = create_session(email, payload.password)
+    return {"access_token":token,"token_type":"bearer","expires_in":28800,"user":{k:v for k,v in user.items() if k != "organization_id"} | {"organization_id":user["organization_id"]}}
 
 @app.post("/api/v1/auth/login")
 def login(payload: LoginIn):

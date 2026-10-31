@@ -4,7 +4,8 @@ import './siksha.css';
 
 export const metadata: Metadata = {
   title: 'Siksha | Learning, connected to experience',
-  description: 'Learn by doing. Grow by guiding.',
+  description: 'A learning and internship platform by Tech & Trend Media Pvt. Ltd., Sanjay Palace, Agra.',
+  icons: { icon: '/tech-trend-favicon.png', apple: '/tech-trend-favicon.png' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = {
   reactStrictMode: true,
+  devIndicators: false,
   async rewrites() {
     return [{
       source: '/api-proxy/:path*',

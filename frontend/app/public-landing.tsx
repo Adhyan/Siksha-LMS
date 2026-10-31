@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { ArrowRight, Moon, Sun } from 'lucide-react';
 
 type Opportunity = { id:string; title:string; organization:string; location:string; category:string; description:string };
@@ -8,13 +8,16 @@ type Course = { id:string; title:string; category:string; lessons:number };
 type Workshop = { id:string; title:string; date:string; format:string; seats:number };
 type Props = {
   onSignIn:(event:FormEvent<HTMLFormElement>)=>void;
+  onSignUp:(event:FormEvent<HTMLFormElement>)=>void;
+  name:string; setName:(value:string)=>void;
   email:string; setEmail:(value:string)=>void;
   password:string; setPassword:(value:string)=>void;
   loginError:string; darkTheme:boolean; toggleTheme:()=>void;
   opportunities:Opportunity[]; courses:Course[]; workshops:Workshop[];
 };
 
-export default function SikshaLanding({onSignIn,email,setEmail,password,setPassword,loginError,darkTheme,toggleTheme,opportunities,courses,workshops}:Props){
+export default function SikshaLanding({onSignIn,onSignUp,name,setName,email,setEmail,password,setPassword,loginError,darkTheme,toggleTheme,opportunities,courses,workshops}:Props){
+  const [authMode,setAuthMode]=useState<'signin'|'signup'>('signin');
   useEffect(()=>{
     const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const coarsePointer=window.matchMedia('(pointer: coarse)').matches;
@@ -38,7 +41,7 @@ export default function SikshaLanding({onSignIn,email,setEmail,password,setPassw
     <div className="siksha-bg siksha-bg-one" aria-hidden="true"/>
     <header className="siksha-header">
       <div className="siksha-nav-shell">
-        <a className="siksha-wordmark" href="#top">Siksha</a>
+        <a className="siksha-company-brand" href="#top" aria-label="Tech & Trend Media Pvt. Ltd. — Siksha home"><img src="/tech-trend-logo.png" alt="Tech & Trend Media logo"/><span><strong>Tech &amp; Trend Media Pvt. Ltd.</strong><small>Siksha learning platform</small></span></a>
         <nav className="siksha-nav" aria-label="Main navigation">
           <a href="#about">About Us</a><a href="#paths">Workshops</a><a href="#enquiry">Forms</a><a href="#contacts">Contacts</a>
         </nav>
@@ -83,12 +86,14 @@ export default function SikshaLanding({onSignIn,email,setEmail,password,setPassw
     <section id="signin" className="siksha-section siksha-signin-section">
       <div className="siksha-bg siksha-bg-two" aria-hidden="true"/>
       <div className="siksha-section-heading"><h2>Pick up <em>where you left off.</em></h2><p>Sign in to continue your learning, internship or workshop journey.</p></div>
-      <form className="siksha-form siksha-login-form" onSubmit={onSignIn}>
-        <h3>Welcome back.</h3>
+      <form className="siksha-form siksha-login-form" onSubmit={authMode==='signin'?onSignIn:onSignUp}>
+        <h3>{authMode==='signin'?'Welcome back.':'Create your account.'}</h3>
+        {authMode==='signup'&&<label className="siksha-field"><span>Full name</span><input autoComplete="name" value={name} onChange={event=>setName(event.target.value)} minLength={2} required/></label>}
         <label className="siksha-field"><span>Email</span><input autoComplete="username" type="email" value={email} onChange={event=>setEmail(event.target.value)} required/></label>
-        <label className="siksha-field"><span>Password</span><input autoComplete="current-password" type="password" value={password} onChange={event=>setPassword(event.target.value)} required/></label>
+        <label className="siksha-field"><span>Password</span><input autoComplete={authMode==='signin'?'current-password':'new-password'} type="password" value={password} onChange={event=>setPassword(event.target.value)} minLength={authMode==='signup'?8:1} required/></label>
         {loginError&&<p className="siksha-form-error" role="alert">{loginError}</p>}
-        <button className="siksha-pill siksha-form-submit" type="submit">Sign in <ArrowRight size={16}/></button>
+        <button className="siksha-pill siksha-form-submit" type="submit">{authMode==='signin'?'Sign in':'Create account'} <ArrowRight size={16}/></button>
+        <button className="siksha-secondary-link" type="button" onClick={()=>setAuthMode(authMode==='signin'?'signup':'signin')}>{authMode==='signin'?'New here? Create an account':'Already have an account? Sign in'}</button>
         <details className="siksha-demo-accounts"><summary>Local demo accounts</summary><span>Choose a role to fill its development credentials.</span><div><button type="button" onClick={()=>{setEmail('student@demo.local');setPassword('StudentDemo!2026');}}>Candidate</button><button type="button" onClick={()=>{setEmail('admin@demo.local');setPassword('AdminDemo!2026');}}>Organization admin</button><button type="button" onClick={()=>{setEmail('mentor@demo.local');setPassword('MentorDemo!2026');}}>Mentor</button></div></details>
       </form>
     </section>
@@ -98,6 +103,6 @@ export default function SikshaLanding({onSignIn,email,setEmail,password,setPassw
       <div id="enquiry" className="siksha-form siksha-enquiry-card"><span className="siksha-kicker">ENQUIRY &amp; REGISTRATION</span><h3>Ready to get started?</h3><p>Find an opportunity, join a workshop or continue a course from your student workspace.</p><a className="siksha-pill" href="#signin">Sign in to continue <ArrowRight size={16}/></a><a className="siksha-secondary-link" href="#paths">Explore the available paths</a></div>
     </section>
 
-    <footer className="siksha-footer siksha-section"><a className="siksha-wordmark" href="#top">Siksha</a><span>Learning, connected to experience.</span><a href="#contacts">Questions? Start here <ArrowRight size={14}/></a></footer>
+    <footer className="siksha-footer siksha-section"><a className="siksha-footer-brand" href="#top"><img src="/tech-trend-logo.png" alt=""/><span><strong>Tech &amp; Trend Media Pvt. Ltd.</strong><small>Siksha · Learning, connected to experience.</small><small>Sanjay Palace, Agra</small></span></a><a href="#contacts">Questions? Start here <ArrowRight size={14}/></a></footer>
   </main>;
 }

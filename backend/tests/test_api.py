@@ -71,7 +71,7 @@ class LmsApiTests(unittest.TestCase):
         self.assertEqual(self.client.post(f"/api/v1/internship-records/{records[0]['id']}/assign-mentor",headers=self.auth("admin"),json={"mentor_id":mentors[0]["id"]}).status_code,200)
         assigned=self.client.get("/api/v1/mentor/assignments",headers=self.auth("mentor")).json()
         self.assertEqual(len(assigned),1)
-        self.assertEqual(assigned[0]["candidate_name"],"Aarav Sharma")
+        self.assertEqual(assigned[0]["candidate_name"],"XYZ")
         self.assertEqual(self.client.get("/api/v1/mentor/assignments",headers=self.auth()).status_code,403)
 
     def test_learning_requires_enrolment_and_progress_is_derived(self):
