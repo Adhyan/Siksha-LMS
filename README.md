@@ -1,4 +1,4 @@
-# Northstar Learning
+# siksha Learning
 
 A local demonstration of a corporate learning and early-career opportunity platform. It includes a responsive Next.js sign-in and dashboard experience backed by a FastAPI API and a persistent SQLite development database.
 
